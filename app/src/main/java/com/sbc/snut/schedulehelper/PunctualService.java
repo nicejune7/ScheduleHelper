@@ -58,7 +58,7 @@ public class PunctualService extends Service implements GeoTask.Geo {
         super.onCreate();
         Log.d("PunctualService", "서비스의 onCreate");
 
-        str_time_appointment="20170813003000";           //임의로 설정.
+        str_time_appointment="20171029180000";           //임의로 설정.
         str_to="seoulstation";                             //임의로 설정.
 
         time_left=send_distance_time();

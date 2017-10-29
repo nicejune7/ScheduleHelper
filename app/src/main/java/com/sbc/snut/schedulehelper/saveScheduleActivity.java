@@ -132,6 +132,7 @@ public class saveScheduleActivity extends Activity {
                 //Toast.makeText(getApplicationContext(),a2b,Toast.LENGTH_LONG).show();
 
 
+                finish();
             }
         });
 
