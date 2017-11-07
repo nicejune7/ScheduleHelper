@@ -39,8 +39,13 @@ public class PunctualService extends Service implements GeoTask.Geo {
     public String str_from;//출발지점:By GPS
 
     //받아올 변수들
-    public String str_to;//약속장소
+    //public String str_to;//약속장소
     public String str_time_appointment;//약속시간
+
+    Double latitude = 999.9;
+    Double longitude = 999.9;
+
+    String goal_time_str = "";
 
 
     public PunctualService() {
@@ -58,6 +63,7 @@ public class PunctualService extends Service implements GeoTask.Geo {
         super.onCreate();
         Log.d("PunctualService", "서비스의 onCreate");
 
+        /*
         str_time_appointment="20171029180000";           //임의로 설정.
         str_to="seoulstation";                             //임의로 설정.
 
@@ -69,10 +75,32 @@ public class PunctualService extends Service implements GeoTask.Geo {
         mContext = this;
 
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+        */
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        latitude = intent.getExtras().getDouble("place_latitude");
+        longitude = intent.getExtras().getDouble("place_longitude");
+        goal_time_str = intent.getExtras().getString("goal_time");
+
+        str_time_appointment = goal_time_str;
+
+
+        Toast.makeText(this, "" + latitude + longitude + goal_time_str, Toast.LENGTH_LONG).show();
+
+        //str_time_appointment="20171029180000";           //임의로 설정.
+        //str_to="seoulstation";                             //임의로 설정.
+
+        time_left=send_distance_time();
+        Log.d("onCreate: 최초 남은 시간", Double.toString(time_left));
+
+        isStop=false;
+        gps_lateness = new GPS(this);
+        mContext = this;
+
+        locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 
         // 서비스가 호출될 때마다 실행
         Log.d("PunctualService", "서비스의 onStartCommand");
@@ -247,7 +275,7 @@ public class PunctualService extends Service implements GeoTask.Geo {
     public void getTime_Distance(double lati, double longi) {
         str_from = "" + lati + "," + "+" + longi + "";
 
-        String url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str_from + "&destinations=" + str_to + "&mode=transit&language=fr-FR&avoid=tolls&key=AIzaSyDepLWIg1PnSeYnMkMwPoTJRzS4VpMr7go";
+        String url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str_from + "&destinations=" + latitude + ",+" + longitude + "&mode=transit&language=fr-FR&avoid=tolls&key=AIzaSyDepLWIg1PnSeYnMkMwPoTJRzS4VpMr7go";
         new GeoTask(PunctualService.this).execute(url);
         Log.d("1Here's latitude is ", Double.toString(lati));
         Log.d("1Here's longitude is ", Double.toString(longi));
